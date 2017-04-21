@@ -34,6 +34,17 @@ Player.prototype.strafeRight = function() {
     this.y += this.speed;
 };
 
+Object.defineProperty(Player.prototype, "defaultControls", {
+    value: {
+        "W": "forward",
+        "S": "backward",
+        "A": "turnLeft",
+        "D": "turnRight",
+        "Q": "strafeRight",
+        "E": "strafeLeft"
+    }
+});
+
 // TESTING PURPOSES
 Player.prototype.report = function() {
     console.log(`x: ${this.x}, y: ${this.y}, a: ${this.angle}`);
