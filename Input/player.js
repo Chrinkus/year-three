@@ -5,7 +5,7 @@ function Player(name, x, y) {
     this.y = y || 0;
     this.speed = 4;
     this.angle = 0;
-    this.turnSpeed = 0.1;
+    this.turnSpeed = 0.075;
 }
 
 Player.prototype.forward = function() {
@@ -27,24 +27,30 @@ Player.prototype.turnRight = function() {
 };
 
 Player.prototype.strafeLeft = function() {
-    this.x += this.speed * Math.cos(this.angle - Math.PI / 2);
-    this.y += this.speed * Math.sin(this.angle - Math.PI / 2);
+    this.x += this.speed * 0.75 * Math.cos(this.angle - Math.PI / 2);
+    this.y += this.speed * 0.75 * Math.sin(this.angle - Math.PI / 2);
 };
 
 Player.prototype.strafeRight = function() {
-    this.x += this.speed * Math.cos(this.angle + Math.PI / 2);
-    this.y += this.speed * Math.sin(this.angle + Math.PI / 2);
+    this.x += this.speed * 0.75 * Math.cos(this.angle + Math.PI / 2);
+    this.y += this.speed * 0.75 * Math.sin(this.angle + Math.PI / 2);
 };
 
-Object.defineProperty(Player.prototype, "defaultControls", {
-    value: {
-        "W": "forward",
-        "S": "backward",
-        "Q": "turnLeft",
-        "E": "turnRight",
-        "D": "strafeRight",
-        "A": "strafeLeft",
-        "R": "report"           // delete when report is removed
+Object.defineProperties(Player.prototype, {
+    "queuedControls": {
+        value: {
+            "W": "forward",
+            "S": "backward",
+            "Q": "strafeLeft",
+            "E": "strafeRight"
+        }
+    },
+    "freeControls": {
+        value: {
+            "A": "turnLeft",
+            "D": "turnRight",
+            "R": "report"
+        }
     }
 });
 
@@ -55,6 +61,8 @@ Player.prototype.draw = function(ctx) {
     ctx.rotate(this.angle);
     ctx.fillStyle = "black";
     ctx.fillRect(-32, -32, 64, 64);
+    ctx.fillStyle = "white";
+    ctx.fillRect(8, -8, 16, 16);
 
     ctx.restore();
 };

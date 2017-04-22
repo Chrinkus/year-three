@@ -16,10 +16,12 @@ const keyboardInput = require("./keyboard");
         window.requestAnimationFrame(main);
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "grey";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         chris.draw(ctx);
+
+        ctrlr.update();
     }
 
     main();
