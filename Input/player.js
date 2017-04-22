@@ -27,11 +27,13 @@ Player.prototype.turnRight = function() {
 };
 
 Player.prototype.strafeLeft = function() {
-    this.y -= this.speed;
+    this.x += this.speed * Math.cos(this.angle - Math.PI / 2);
+    this.y += this.speed * Math.sin(this.angle - Math.PI / 2);
 };
 
 Player.prototype.strafeRight = function() {
-    this.y += this.speed;
+    this.x += this.speed * Math.cos(this.angle + Math.PI / 2);
+    this.y += this.speed * Math.sin(this.angle + Math.PI / 2);
 };
 
 Object.defineProperty(Player.prototype, "defaultControls", {
@@ -40,11 +42,22 @@ Object.defineProperty(Player.prototype, "defaultControls", {
         "S": "backward",
         "Q": "turnLeft",
         "E": "turnRight",
-        "A": "strafeRight",
-        "D": "strafeLeft",
+        "D": "strafeRight",
+        "A": "strafeLeft",
         "R": "report"           // delete when report is removed
     }
 });
+
+Player.prototype.draw = function(ctx) {
+    ctx.save();
+
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.angle);
+    ctx.fillStyle = "black";
+    ctx.fillRect(-32, -32, 64, 64);
+
+    ctx.restore();
+};
 
 // TESTING PURPOSES
 Player.prototype.report = function() {

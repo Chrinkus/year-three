@@ -25,6 +25,7 @@ Controller.prototype.keyDown = function(code) {
 Controller.prototype.keyUp = function(code) {
     // nothing  yet...
 };
+
 if (typeof module !== "undefined" && module.exports) {
     module.exports = Controller;
 }
