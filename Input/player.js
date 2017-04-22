@@ -38,10 +38,11 @@ Object.defineProperty(Player.prototype, "defaultControls", {
     value: {
         "W": "forward",
         "S": "backward",
-        "A": "turnLeft",
-        "D": "turnRight",
-        "Q": "strafeRight",
-        "E": "strafeLeft"
+        "Q": "turnLeft",
+        "E": "turnRight",
+        "A": "strafeRight",
+        "D": "strafeLeft",
+        "R": "report"           // delete when report is removed
     }
 });
 

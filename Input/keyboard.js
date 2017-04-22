@@ -1,17 +1,17 @@
-function keyboardInput(parser) {
+function keyboardInput(controller) {
     "use strict";
 
     function downHandler(event) {
         event.preventDefault();
         event.stopPropagation();
 
-        parser.keyDown(event.keyCode, event.shiftKey);
+        controller.keyDown(event.keyCode, event.shiftKey);
     }
 
     function upHandler(event) {
         event.stopPropagation();
 
-        parser.keyUp(event.keyCode, event.shiftKey);
+        controller.keyUp(event.keyCode, event.shiftKey);
     }
 
     document.addEventListener("keydown", downHandler, false);
