@@ -4,6 +4,9 @@ charCodes = {
     17: "ctrl",
     18: "alt",
 
+    // Misc
+    32: "space",
+
     // Digits
     48: "0",
     49: "1",
