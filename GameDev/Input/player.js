@@ -49,8 +49,9 @@ Player.prototype.strafeRight = function() {
 };
 
 Player.prototype.shoot = function() {
-    const x = this.centerX + this.emitX * Math.cos(this.angle),
-          y = this.centerY + this.emitY * Math.sin(this.angle);
+    // Use the emitter center
+    const x = this.centerX + this.emitW * Math.cos(this.angle),
+          y = this.centerY;
 
     this.projectiles.push(new Projectile(x, y, this.emitW, this.angle,
                                          this.boxColor, this.emitColor));
