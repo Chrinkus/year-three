@@ -33,6 +33,10 @@ Controller.prototype.keyDown = function(code) {
     } else if (charCode in this.actor.freeControls) {
 
         this.activeKeys[charCode] = true;
+
+    } else if (charCode in this.actor.perPressControls) {
+
+        this.actor[this.actor.perPressControls[charCode]]();
     }
 };
 

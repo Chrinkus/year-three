@@ -1,4 +1,6 @@
-function Player(name, x, y) {
+const Projectile = require("./projectile");
+
+function Player(name, x, y, projectiles) {
     "use strict";
     this.name = name;
     this.centerX    = x || 0;
@@ -17,7 +19,7 @@ function Player(name, x, y) {
     this.angle      = 0;
     this.turnSpeed  = 0.075;
 
-    this.projectiles = [];
+    this.projectiles = projectiles;
 }
 
 Player.prototype.forward = function() {
@@ -67,7 +69,7 @@ Object.defineProperties(Player.prototype, {
         }
     },
 
-    "timedControls" : {
+    "perPressControls" : {
         value: {
             "space": "shoot"
         }

@@ -4,9 +4,9 @@ function Projectile(x, y, w, a, color1, color2) {
     this.centerX        = x;
     this.centerY        = y;
     this.angle          = a;
-    this.speed          = 12;
+    this.speed          = 16;
     this.distance       = 0;
-    this.maxDistance    = 200;
+    this.maxDistance    = 400;
     
     this.outerW         = w;
     this.relOuterX      = -w / 2;
@@ -39,6 +39,7 @@ Projectile.prototype.draw = function(ctx) {
 
     ctx.translate(this.centerX, this.centerY);
     ctx.rotate(this.angle);
+
     ctx.fillStyle = this.outerColor;
     ctx.fillRect(this.relOuterX, this.relOuterY, this.outerW, this.outerW);
     ctx.fillStyle = this.innerColor;
@@ -46,3 +47,7 @@ Projectile.prototype.draw = function(ctx) {
 
     ctx.restore();
 };
+
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = Projectile;
+}
