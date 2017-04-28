@@ -59,28 +59,17 @@ Player.prototype.shoot = function() {
                                          this.boxColor, this.emitColor));
 };
 
-Object.defineProperties(Player.prototype, {
-    "queuedControls": {
-        value: {
-            "W": "forward",
-            "S": "backward",
-            "Q": "strafeLeft",
-            "E": "strafeRight"
-        }
-    },
+Object.defineProperty(Player.prototype, "controls", {
+    value: {
+        "W": { action: "forward",       behaviour: "queued" },
+        "S": { action: "backward",      behaviour: "queued" },
+        "Q": { action: "strafeLeft",    behaviour: "queued" },
+        "E": { action: "strafeRight",   behaviour: "queued" },
 
-    "perPressControls" : {
-        value: {
-            "space": "shoot"
-        }
-    },
+        "A": { action: "turnLeft",      behaviour: "free" },
+        "D": { action: "turnRight",     behaviour: "free" },
 
-    "freeControls": {
-        value: {
-            "A": "turnLeft",
-            "D": "turnRight",
-            "R": "report"
-        }
+        "space": { action: "shoot",     behaviour: "once" }
     }
 });
 
@@ -95,11 +84,6 @@ Player.prototype.draw = function(ctx) {
     ctx.fillRect(this.emitX, this.emitY, this.emitW, this.emitW);
 
     ctx.restore();
-};
-
-// TESTING PURPOSES
-Player.prototype.report = function() {
-    console.log(`x: ${this.centerX}, y: ${this.centerY}, a: ${this.angle}`);
 };
 
 if (typeof module !== "undefined" && module.exports) {

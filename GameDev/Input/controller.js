@@ -67,6 +67,38 @@ Controller.prototype.update = function() {
     }
 };
 
+/*
+Controller.prototype.routeBehaviour = function(action, behaviour) {
+    const actor         = this.actor,
+          queue         = new LinkedList(),
+          activeKeys    = Object.create(null),
+          preventRepeat = Object.create(null);
+
+    return {
+        queued (action) {
+            if (!preventRepeat[action]) {
+                queue.addItem(action);
+                preventRepeat[action] = true;
+            }
+            return;
+        },
+
+        free (action) {
+            activeKeys[action] = true;
+            return;
+        },
+
+        press (action) {
+            if (!preventRepeat[action]) {
+                actor[action]();
+                preventRepeat[action] = true;
+            }
+            return;
+        }
+    };
+};
+*/
+
 if (typeof module !== "undefined" && module.exports) {
     module.exports = Controller;
 }
