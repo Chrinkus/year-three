@@ -1,5 +1,5 @@
 const Player = require("./player");
-const Controller = require("./controller");
+const controller = require("./controller2");
 const keyboardInput = require("./keyboard");
 const projectileManager = require("./projectile-manager");
 
@@ -11,7 +11,7 @@ const projectileManager = require("./projectile-manager");
 
     const chris = new Player("Chris", canvas.width / 2, canvas.height / 2,
                              projectileManager.projectiles);
-    const ctrlr = new Controller(chris);
+    const ctrlr = controller(chris);
     keyboardInput(ctrlr);
 
     function main() {
@@ -24,7 +24,7 @@ const projectileManager = require("./projectile-manager");
         chris.draw(ctx);
         projectileManager.draw(ctx);
 
-        ctrlr.update();
+        ctrlr.fire();
         projectileManager.update();
         projectileManager.clean();
     }

@@ -13,7 +13,7 @@ function Player(name, x, y, projectiles) {
     this.emitX      = 8;
     this.emitY      = -8;
     this.emitW      = 16;
-    this.emitColor  = "white";
+    this.emitColor  = "red";
 
     this.speed      = 4;
     this.angle      = 0;

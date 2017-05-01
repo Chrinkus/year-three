@@ -1,9 +1,10 @@
-const charCodes = require("./charcodes");
-const LinkedList = require("./linkedlist");
+const charCodes     = require("./charcodes");
+const LinkedList    = require("./linkedlist");
 
 function controller(actor) {
     "use strict";
-    const queue             = new LinkedList(),
+    const controls          = actor.controls,
+          queue             = new LinkedList(),
           activeKeys        = Object.create(null),
           preventRepeat     = Object.create(null);
 
@@ -13,9 +14,9 @@ function controller(actor) {
             return;
         }
 
-        switch (actor.controls[charKey].behaviour) {
+        switch (controls[charKey].behaviour) {
             case "queued":
-                queued.addItem(charKey);
+                queue.addItem(charKey);
                 preventRepeat[charKey] = true;
                 break;
 
@@ -35,7 +36,7 @@ function controller(actor) {
 
     function cancelKey(charKey) {
 
-        switch (actor.controls[charKey].behaviour) {
+        switch (controls[charKey].behaviour) {
             case "queued":
                 queue.removeItem(charKey);
                 delete preventRepeat[charKey];
@@ -58,7 +59,7 @@ function controller(actor) {
         keyDown(code) {
             const charKey = charCodes[code];
 
-            if (charKey in actor.controls) {
+            if (charKey in controls) {
                 routeControl(charKey);
             }
         },
@@ -66,24 +67,27 @@ function controller(actor) {
         keyUp(code) {
             const charKey = charCodes[code];
 
-            if (charKey in actor.controls) {
+            if (charKey in controls) {
                 cancelKey(charKey);
             }
         },
 
         fire() {
-            const controls = actor.controls;
             let prop;
-
-            // fire queued controls
-            if (queue.val) {
-                actor[controls[queue.val].action]();
-            }
 
             // fire free controls
             for (prop in activeKeys) {
                 actor[controls[prop].action]();
             }
+
+            // fire queued controls
+            if (queue.val) {
+                actor[controls[queue.val].action]();
+            }
         }
     };
+}
+
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = controller;
 }
