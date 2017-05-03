@@ -1,6 +1,6 @@
-const Projectile = require("./projectile");
+//const Projectile = require("./projectile");
 
-function Player(name, x, y, projectiles) {
+function Player(name, x, y) {
     "use strict";
     this.name = name;
     this.centerX    = x || 0;
@@ -13,13 +13,13 @@ function Player(name, x, y, projectiles) {
     this.emitX      = 8;
     this.emitY      = -8;
     this.emitW      = 16;
-    this.emitColor  = "red";
+    this.emitColor  = "aqua";
 
     this.speed      = 4;
     this.angle      = 0;
     this.turnSpeed  = 0.075;
 
-    this.projectiles = projectiles;
+    //this.projectiles = projectiles;
 }
 
 Player.prototype.forward = function() {
@@ -50,6 +50,7 @@ Player.prototype.strafeRight = function() {
     this.centerY += this.speed * 0.75 * Math.sin(this.angle + Math.PI / 2);
 };
 
+/*
 Player.prototype.shoot = function() {
     // Use the emitter center
     const x = this.centerX + this.emitW * Math.cos(this.angle),
@@ -58,6 +59,7 @@ Player.prototype.shoot = function() {
     this.projectiles.push(new Projectile(x, y, this.emitW, this.angle,
                                          this.boxColor, this.emitColor));
 };
+*/
 
 Object.defineProperty(Player.prototype, "controls", {
     value: {
@@ -67,9 +69,9 @@ Object.defineProperty(Player.prototype, "controls", {
         "E": { action: "strafeRight",   behaviour: "queued" },
 
         "A": { action: "turnLeft",      behaviour: "free" },
-        "D": { action: "turnRight",     behaviour: "free" },
+        "D": { action: "turnRight",     behaviour: "free" }
 
-        "space": { action: "shoot",     behaviour: "once" }
+        //"space": { action: "shoot",     behaviour: "once" }
     }
 });
 

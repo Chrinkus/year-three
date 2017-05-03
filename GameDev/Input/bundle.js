@@ -5,6 +5,9 @@ charCodes = {
     17: "ctrl",
     18: "alt",
 
+    // Misc
+    32: "space",
+
     // Digits
     48: "0",
     49: "1",
@@ -51,73 +54,98 @@ if (typeof module !== "undefined" && module.exports) {
 }
 
 },{}],2:[function(require,module,exports){
-/* The Controller
- *
- * Adapts an event handling module to a target entity that is controlled by
- * the user.
- */
-
 const charCodes     = require("./charcodes");
 const LinkedList    = require("./linkedlist");
 
-function Controller(actor) {
+function controller(actor) {
     "use strict";
-    this.actor          = actor;
-    this.charCodes      = charCodes;
+    const controls          = actor.controls,
+          queue             = new LinkedList(),
+          activeKeys        = Object.create(null),
+          preventRepeat     = Object.create(null);
 
-    this.queue          = new LinkedList();
-    this.activeKeys     = Object.create(null);
-    this.preventRepeat  = Object.create(null);
-}
+    function routeControl(charKey) {
 
-Controller.prototype.keyDown = function(code) {
-    const charCode = this.charCodes[code];
-
-    if (charCode in this.actor.queuedControls) {
-
-        if (this.preventRepeat[charCode]) {
+        if (charKey in preventRepeat) {
             return;
-        } else {
-            this.preventRepeat[charCode] = true;
         }
 
-        this.queue.addItem(charCode);
+        switch (controls[charKey].behaviour) {
+            case "queued":
+                queue.addItem(charKey);
+                preventRepeat[charKey] = true;
+                break;
 
-    } else if (charCode in this.actor.freeControls) {
+            case "once":
+                actor[controls[charKey].action]();
+                preventRepeat[charKey] = true;
+                break;
 
-        this.activeKeys[charCode] = true;
-    }
-};
+            case "free":
+                activeKeys[charKey] = true;
+                break;
 
-Controller.prototype.keyUp = function(code) {
-    const charCode = this.charCodes[code];
-
-    if (charCode in this.actor.queuedControls) {
-
-        this.queue.removeItem(charCode);
-
-        delete this.preventRepeat[charCode];
-
-    } else if (charCode in this.actor.freeControls) {
-
-        delete this.activeKeys[charCode];
-    }
-};
-
-Controller.prototype.update = function() {
-    let prop;
-
-    if (this.queue.val) {
-        this.actor[this.actor.queuedControls[this.queue.val]]();
+            default:
+                console.error("Unregistered control key");
+        }
     }
 
-    for (prop in this.activeKeys) {
-        this.actor[this.actor.freeControls[prop]]();
+    function cancelKey(charKey) {
+
+        switch (controls[charKey].behaviour) {
+            case "queued":
+                queue.removeItem(charKey);
+                delete preventRepeat[charKey];
+                break;
+
+            case "once":
+                delete preventRepeat[charKey];
+                break;
+
+            case "free":
+                delete activeKeys[charKey];
+                break;
+
+            default:
+                console.error("Sneaky key in keyUp");
+        }
     }
-};
+
+    return {
+        keyDown(code) {
+            const charKey = charCodes[code];
+
+            if (charKey in controls) {
+                routeControl(charKey);
+            }
+        },
+
+        keyUp(code) {
+            const charKey = charCodes[code];
+
+            if (charKey in controls) {
+                cancelKey(charKey);
+            }
+        },
+
+        fire() {
+            let prop;
+
+            // fire free controls
+            for (prop in activeKeys) {
+                actor[controls[prop].action]();
+            }
+
+            // fire queued controls
+            if (queue.val) {
+                actor[controls[queue.val].action]();
+            }
+        }
+    };
+}
 
 if (typeof module !== "undefined" && module.exports) {
-    module.exports = Controller;
+    module.exports = controller;
 }
 
 },{"./charcodes":1,"./linkedlist":4}],3:[function(require,module,exports){
@@ -186,24 +214,38 @@ if (typeof module !== "undefined" && module.exports) {
 }
 
 },{}],5:[function(require,module,exports){
+//const Projectile = require("./projectile");
+
 function Player(name, x, y) {
     "use strict";
     this.name = name;
-    this.x = x || 0;
-    this.y = y || 0;
-    this.speed = 4;
-    this.angle = 0;
-    this.turnSpeed = 0.075;
+    this.centerX    = x || 0;
+    this.centerY    = y || 0;
+
+    this.boxX       = -32;
+    this.boxY       = -32;
+    this.boxW       = 64;
+    this.boxColor   = "black";
+    this.emitX      = 8;
+    this.emitY      = -8;
+    this.emitW      = 16;
+    this.emitColor  = "aqua";
+
+    this.speed      = 4;
+    this.angle      = 0;
+    this.turnSpeed  = 0.075;
+
+    //this.projectiles = projectiles;
 }
 
 Player.prototype.forward = function() {
-    this.x += this.speed * Math.cos(this.angle);
-    this.y += this.speed * Math.sin(this.angle);
+    this.centerX += this.speed * Math.cos(this.angle);
+    this.centerY += this.speed * Math.sin(this.angle);
 };
 
 Player.prototype.backward = function() {
-    this.x -= this.speed / 2 * Math.cos(this.angle);
-    this.y -= this.speed / 2 * Math.sin(this.angle);
+    this.centerX -= this.speed / 2 * Math.cos(this.angle);
+    this.centerY -= this.speed / 2 * Math.sin(this.angle);
 }
 
 Player.prototype.turnLeft = function() {
@@ -215,49 +257,51 @@ Player.prototype.turnRight = function() {
 };
 
 Player.prototype.strafeLeft = function() {
-    this.x += this.speed * 0.75 * Math.cos(this.angle - Math.PI / 2);
-    this.y += this.speed * 0.75 * Math.sin(this.angle - Math.PI / 2);
+    this.centerX += this.speed * 0.75 * Math.cos(this.angle - Math.PI / 2);
+    this.centerY += this.speed * 0.75 * Math.sin(this.angle - Math.PI / 2);
 };
 
 Player.prototype.strafeRight = function() {
-    this.x += this.speed * 0.75 * Math.cos(this.angle + Math.PI / 2);
-    this.y += this.speed * 0.75 * Math.sin(this.angle + Math.PI / 2);
+    this.centerX += this.speed * 0.75 * Math.cos(this.angle + Math.PI / 2);
+    this.centerY += this.speed * 0.75 * Math.sin(this.angle + Math.PI / 2);
 };
 
-Object.defineProperties(Player.prototype, {
-    "queuedControls": {
-        value: {
-            "W": "forward",
-            "S": "backward",
-            "Q": "strafeLeft",
-            "E": "strafeRight"
-        }
-    },
-    "freeControls": {
-        value: {
-            "A": "turnLeft",
-            "D": "turnRight",
-            "R": "report"
-        }
+/*
+Player.prototype.shoot = function() {
+    // Use the emitter center
+    const x = this.centerX + this.emitW * Math.cos(this.angle),
+          y = this.centerY;
+
+    this.projectiles.push(new Projectile(x, y, this.emitW, this.angle,
+                                         this.boxColor, this.emitColor));
+};
+*/
+
+Object.defineProperty(Player.prototype, "controls", {
+    value: {
+        "W": { action: "forward",       behaviour: "queued" },
+        "S": { action: "backward",      behaviour: "queued" },
+        "Q": { action: "strafeLeft",    behaviour: "queued" },
+        "E": { action: "strafeRight",   behaviour: "queued" },
+
+        "A": { action: "turnLeft",      behaviour: "free" },
+        "D": { action: "turnRight",     behaviour: "free" }
+
+        //"space": { action: "shoot",     behaviour: "once" }
     }
 });
 
 Player.prototype.draw = function(ctx) {
     ctx.save();
 
-    ctx.translate(this.x, this.y);
+    ctx.translate(this.centerX, this.centerY);
     ctx.rotate(this.angle);
-    ctx.fillStyle = "black";
-    ctx.fillRect(-32, -32, 64, 64);
-    ctx.fillStyle = "white";
-    ctx.fillRect(8, -8, 16, 16);
+    ctx.fillStyle = this.boxColor;
+    ctx.fillRect(this.boxX, this.boxY, this.boxW, this.boxW);
+    ctx.fillStyle = this.emitColor;
+    ctx.fillRect(this.emitX, this.emitY, this.emitW, this.emitW);
 
     ctx.restore();
-};
-
-// TESTING PURPOSES
-Player.prototype.report = function() {
-    console.log(`x: ${this.x}, y: ${this.y}, a: ${this.angle}`);
 };
 
 if (typeof module !== "undefined" && module.exports) {
@@ -266,8 +310,9 @@ if (typeof module !== "undefined" && module.exports) {
 
 },{}],6:[function(require,module,exports){
 const Player = require("./player");
-const Controller = require("./controller");
+const controller = require("./controller2");
 const keyboardInput = require("./keyboard");
+//const projectileManager = require("./projectile-manager");
 
 (function() {
     "use strict";
@@ -276,7 +321,7 @@ const keyboardInput = require("./keyboard");
     const ctx = canvas.getContext("2d");
 
     const chris = new Player("Chris", canvas.width / 2, canvas.height / 2);
-    const ctrlr = new Controller(chris);
+    const ctrlr = controller(chris);
     keyboardInput(ctrlr);
 
     function main() {
@@ -287,11 +332,14 @@ const keyboardInput = require("./keyboard");
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         chris.draw(ctx);
+        //projectileManager.draw(ctx);
 
-        ctrlr.update();
+        ctrlr.fire();
+        //projectileManager.update();
+        //projectileManager.clean();
     }
 
     main();
 }());
 
-},{"./controller":2,"./keyboard":3,"./player":5}]},{},[6]);
+},{"./controller2":2,"./keyboard":3,"./player":5}]},{},[6]);
