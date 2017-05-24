@@ -1,0 +1,59 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 940px;
+    margin: 0 auto;
+    color: White;
+}
+
+header {
+    background-color: Red;
+    width: 100%;
+    height: 200px;
+    margin: 8px 0;
+}
+
+main {
+    display: flex;
+}
+
+#container {
+    width: 80%;
+}
+
+article {
+    display: flex;
+    height: 250px;
+    margin-bottom: 8px;
+}
+
+article * {
+    margin-right: 8px;
+}
+
+article img {
+    background-color: Blue;
+    flex-grow: 1;
+}
+
+article section {
+    background-color: Green;
+    flex-grow: 1.6;
+}
+
+aside {
+    background-color: Purple;
+    width: 20%;
+    margin-bottom: 8px;
+}
+
+footer {
+    background-color: Orange;
+    width: 100%;
+    height: 100px;
+    margin-bottom: 8px;
+}
