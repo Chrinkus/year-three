@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Code Tag Test</title>
+        <link href="./code.css" rel="stylesheet">
+        <script src="./code.js" defer></script>
+    </head>
+    <body>
+        <h1>Code Tag Examples</h1>
+
+        <p>Inline code looks like: <code>return new Promise();</code>.</p>
+
+        <p>A block looks like: </p>
+<code class="block">const canvas = document.getElementById("viewport"),
+      ctx = canvas.getContext("2d");
+
+ctx.fillRect(10, 10, 100, 100);</code>
+        <p>Success? Yes. Appying a class with display and whitespace rules works.</p>
+
+        <code>function add(a, b) {</code>
+        <code>    return a + b;</code>
+        <code>}</code>
+
+        <p>Individual code blocks for each line are terrible.</p>
+
+        <code class="block">[1, 2, 3].map(x => x * 2)
+            .filter(y => y % 2 == 0);</code>
+        <p>The whitespace rule is affected by auto-indent</p>
+    </body>
+</html>

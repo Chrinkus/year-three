@@ -1,0 +1,12 @@
+code {
+    font-family: Monaco, monospace;
+    color: Red;
+    background-color: Silver;
+    border-radius: 0.15em;
+    padding: 0 0.25em;
+}
+
+code.block {
+    display: block;
+    white-space: pre;
+}
