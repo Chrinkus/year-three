@@ -29,7 +29,8 @@ main {
 aside {
     background-color: Blue;
     width: 20%;
-    max-height: 200px;
+    min-height: 200px;
+    max-height: 400px;
     position: -webkit-sticky;
     position: sticky;
     top: 0;
@@ -51,4 +52,19 @@ footer {
     background-color: Green;
     width: 100%;
     min-height: 75px;
+}
+
+@media only screen and (max-width: 600px) {
+    main {
+        flex-direction: column;
+    }
+
+    aside {
+        width: 100%;
+        position: relative;
+    }
+
+    section {
+        width: 100%;
+    }
 }
